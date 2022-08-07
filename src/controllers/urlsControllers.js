@@ -23,3 +23,14 @@ export async function getShortenById(req, res) {
     return res.status(200).send(result.rows[0]);
   }
 }
+
+export async function openShorten(req, res) {
+  const { shortUrl } = req.params;
+  const result = await urlsRepository.openShorten(shortUrl);
+  if (result.rowCount === 0) {
+    return res.status(404).send("URL inexistente!");
+  } else {
+    await urlsRepository.updateVisitCount(shortUrl);
+    return res.redirect(result.rows[0].url);
+  }
+}
