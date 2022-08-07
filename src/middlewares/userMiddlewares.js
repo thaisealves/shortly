@@ -36,11 +36,11 @@ export async function signInMiddleware(req, res, next) {
       console.log(error);
       return res.status(422).send("Dados incorretos para o login");
     }
+    res.locals.user = getEmail.rows[0];
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
-  res.locals.user = getEmail.rows[0];
 
   next();
 }
