@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/userRepository.js";
-
+import jwt from "../token/jwt.js";
 export async function signUp(req, res) {
   const { name, email, password, confirmPassword } = req.body;
 
@@ -13,7 +13,7 @@ export async function signUp(req, res) {
     password: passwordHash,
     confirmPassword: confirmPasswordHash,
   };
-  
+
   try {
     await userRepository.signUp(body);
     return res.sendStatus(201);
@@ -21,4 +21,18 @@ export async function signUp(req, res) {
     console.log(error);
     res.sendStatus(500);
   }
+}
+
+export async function signIn(req, res) {
+  const { user } = res.locals;
+  const token = jwt.createToken({
+    id: user.id,
+    email: user.email,
+    password: user.password,
+  });
+  const data = {
+    name: user.name,
+    token: `Bearer ${token}`,
+  };
+  return res.status(200).send(data);
 }
