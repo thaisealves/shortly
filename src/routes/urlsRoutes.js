@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { shortenMiddleware } from "../middlewares/urlsMiddlewares.js";
+import {
+  shortenMiddleware,
+  getShortenMiddleware,
+  openShortenMiddleware,
+} from "../middlewares/urlsMiddlewares.js";
 import {
   postShorten,
   getShortenById,
@@ -8,6 +12,6 @@ import {
 const router = Router();
 
 router.post("/urls/shorten", shortenMiddleware, postShorten);
-router.get("/urls/:id", getShortenById);
-router.get("/urls/open/:shortUrl", openShorten);
+router.get("/urls/:id", getShortenMiddleware, getShortenById);
+router.get("/urls/open/:shortUrl", openShortenMiddleware, openShorten);
 export default router;

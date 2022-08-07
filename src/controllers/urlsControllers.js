@@ -15,22 +15,22 @@ export async function postShorten(req, res) {
 }
 
 export async function getShortenById(req, res) {
-  const { id } = req.params;
-  const result = await urlsRepository.getShortenById(id);
-  if (result.rowCount === 0) {
-    return res.status(404).send("ID de url inexistente!");
-  } else {
-    return res.status(200).send(result.rows[0]);
+  const { shorten } = res.locals;
+  try {
+    return res.status(200).send(shorten.result.rows[0]);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
 }
 
 export async function openShorten(req, res) {
-  const { shortUrl } = req.params;
-  const result = await urlsRepository.openShorten(shortUrl);
-  if (result.rowCount === 0) {
-    return res.status(404).send("URL inexistente!");
-  } else {
-    await urlsRepository.updateVisitCount(shortUrl);
-    return res.redirect(result.rows[0].url);
+  const { shorten } = res.locals;
+  try {
+    await urlsRepository.updateVisitCount(shorten.shortUrl);
+    return res.redirect(shorten.result.rows[0].url);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
 }

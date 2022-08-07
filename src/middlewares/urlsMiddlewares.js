@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import urlsSchema from "../schemas/urlsSchemas.js";
+import urlsRepository from "../repositories/urlsRepository.js";
 import jwt from "../token/jwt.js";
 export async function shortenMiddleware(req, res, next) {
   try {
@@ -19,6 +20,44 @@ export async function shortenMiddleware(req, res, next) {
       userId: verified.id,
       shortUrl: nanoid(5),
       url: req.body.url,
+    };
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}
+
+export async function getShortenMiddleware(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const result = await urlsRepository.getShortenById(id);
+    if (result.rowCount === 0) {
+      return res.status(404).send("ID de url inexistente!");
+    }
+    res.locals.shorten = {
+      id,
+      result,
+    };
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}
+export async function openShortenMiddleware(req, res, next) {
+  const { shortUrl } = req.params;
+
+  try {
+    const result = await urlsRepository.openShorten(shortUrl);
+
+    if (result.rowCount === 0) {
+      return res.status(404).send("URL inexistente!");
+    }
+    res.locals.shorten = {
+      shortUrl,
+      result,
     };
   } catch (error) {
     console.log(error);
