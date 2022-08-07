@@ -15,9 +15,11 @@ export async function shortenMiddleware(req, res, next) {
       return res.status(422).send("Corpo inválido!");
     }
 
-    res
-      .status(201)
-      .send({ userId: verified.id, shortUrl: nanoid(5), url: req.body.url });
+    res.locals.shorten = {
+      userId: verified.id,
+      shortUrl: nanoid(5),
+      url: req.body.url,
+    };
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
