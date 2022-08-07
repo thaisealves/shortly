@@ -14,7 +14,7 @@ const verifyToken = (data) => {
     const dataToken = jwt.verify(data, SECRET);
     return dataToken;
   } catch (error) {
-    console.log(err);
+    console.log(error);
     return null;
   }
 };

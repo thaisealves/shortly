@@ -4,7 +4,10 @@ export async function postShorten(req, res) {
 
   try {
     await urlsRepository.postShorten(shorten);
-    res.status(201).send(`shortUrl: ${shorten.shortUrl}`);
+    const body = {
+      shortUrl: shorten.shortUrl,
+    };
+    res.status(201).send(body);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
