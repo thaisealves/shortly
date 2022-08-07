@@ -40,7 +40,7 @@ export async function signInMiddleware(req, res, next) {
     console.log(error);
     res.sendStatus(500);
   }
-  return res.sendStatus(201);
+  res.locals.user = getEmail.rows[0];
 
   next();
 }

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/userRepository.js";
-
+import userSchemas from "../schemas/userSchemas.js";
+import { createToken } from "../token/jwt.js";
 export async function signUp(req, res) {
   const { name, email, password, confirmPassword } = req.body;
 
@@ -23,6 +24,16 @@ export async function signUp(req, res) {
   }
 }
 
-export async function signIn(req, res){
-    
+export async function signIn(req, res) {
+  const { user } = res.locals;
+  const token = createToken({
+    id: user.id,
+    email: user.email,
+    password: user.password,
+  });
+  const data = {
+    name: user.name,
+    token: `Bearer ${token}`,
+  };
+  return res.status(200).send(data);
 }
