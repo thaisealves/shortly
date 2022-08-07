@@ -6,5 +6,11 @@ function postShorten(body) {
     [body.userId, body.url, body.shortUrl]
   );
 }
+function getShortenById(id) {
+  return connection.query(
+    `SELECT id, "shortUrl", url FROM urls WHERE id = $1`,
+    [id]
+  );
+}
 
-export default { postShorten };
+export default { postShorten, getShortenById };
