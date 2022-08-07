@@ -34,3 +34,14 @@ export async function openShorten(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function deleteShorten(req, res) {
+  const { deleting } = res.locals;
+  try {
+    await urlsRepository.deletingShorten(deleting.id);
+    return res.sendStatus(204);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}

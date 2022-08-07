@@ -65,3 +65,27 @@ export async function openShortenMiddleware(req, res, next) {
   }
   next();
 }
+
+export async function deleteShortenMiddleware(req, res, next) {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  try {
+    const result = await urlsRepository.getAllShortenById(id);
+    const verified = jwt.verifyToken(token);
+    if (result.rowCount === 0) {
+      return res.status(404).send("ID de url inexistente!");
+    }
+    if (!verified || verified.id !== result.rows[0].userId) {
+      return res.status(401).send("Token inválido!");
+    }
+    res.locals.deleting = {
+      id,
+    };
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}

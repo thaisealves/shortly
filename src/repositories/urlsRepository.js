@@ -26,4 +26,18 @@ function updateVisitCount(shorten) {
   );
 }
 
-export default { postShorten, getShortenById, openShorten, updateVisitCount };
+function getAllShortenById(id) {
+  return connection.query(`SELECT * FROM urls WHERE id = $1`, [id]);
+}
+
+function deletingShorten(id) {
+  return connection.query(`DELETE FROM urls WHERE id = $1`, [id]);
+}
+export default {
+  postShorten,
+  getShortenById,
+  openShorten,
+  updateVisitCount,
+  getAllShortenById,
+  deletingShorten,
+};
