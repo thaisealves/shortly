@@ -1,6 +1,8 @@
 import userSchemas from "../schemas/userSchemas.js";
 import { userRepository } from "../repositories/userRepository.js";
 import bcrypt from "bcrypt";
+import jwt from "../token/jwt.js";
+
 export async function signUpMiddleware(req, res, next) {
   const { email } = req.body;
   const { error } = userSchemas.signUpSchema.validate(req.body);
@@ -37,6 +39,26 @@ export async function signInMiddleware(req, res, next) {
       return res.status(422).send("Dados incorretos para o login");
     }
     res.locals.user = getEmail.rows[0];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+
+  next();
+}
+export async function getUserMiddleware(req, res, next) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+  try {
+    const verified = jwt.verifyToken(token);
+    const { rows: result } = await userRepository.getUser(verified.id);
+    if (!verified) {
+      return res.status(401).sen("Token inválido!");
+    }
+    if (!result) {
+      return res.status(404).send("Usuário não existe!");
+    }
+    res.locals.id = verified.id;
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
