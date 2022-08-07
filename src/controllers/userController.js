@@ -13,7 +13,7 @@ export async function signUp(req, res) {
     password: passwordHash,
     confirmPassword: confirmPasswordHash,
   };
-  
+
   try {
     await userRepository.signUp(body);
     return res.sendStatus(201);
@@ -21,4 +21,8 @@ export async function signUp(req, res) {
     console.log(error);
     res.sendStatus(500);
   }
+}
+
+export async function signIn(req, res){
+    
 }
