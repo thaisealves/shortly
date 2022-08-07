@@ -19,3 +19,22 @@ export async function signUpMiddleware(req, res, next) {
   }
   next();
 }
+
+export async function signInMiddleware(req, res, next) {
+  const { email } = req.body;
+  const { error } = userSchemas.signInSchema.validate(req.body);
+  try {
+    const getEmail = await userRepository.getUser(email);
+    if (getEmail.rowCount === 0) {
+      return res.status(409).send("E-mail não cadastrado, usuário não existe!");
+    }
+    if (error) {
+      console.log(error);
+      return res.status(422).send("E-mail ou senha incorretos!");
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}
