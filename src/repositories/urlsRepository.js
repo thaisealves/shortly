@@ -12,5 +12,18 @@ function getShortenById(id) {
     [id]
   );
 }
+function openShorten(shorten) {
+  return connection.query(
+    `SELECT id, "shortUrl", url FROM urls WHERE "shortUrl" = $1`,
+    [shorten]
+  );
+}
 
-export default { postShorten, getShortenById };
+function updateVisitCount(shorten) {
+  return connection.query(
+    `UPDATE urls SET "visitCount" = "visitCount"+1 WHERE "shortUrl" = $1`,
+    [shorten]
+  );
+}
+
+export default { postShorten, getShortenById, openShorten, updateVisitCount };
