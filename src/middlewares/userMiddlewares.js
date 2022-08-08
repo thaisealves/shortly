@@ -51,7 +51,7 @@ export async function getUserMiddleware(req, res, next) {
   const token = authorization?.replace("Bearer ", "");
   try {
     const verified = jwt.verifyToken(token);
-    const { rows: result } = await userRepository.getUser(verified.id);
+    const { rows: result } = await userRepository.getUser(verified.email);
     if (!verified) {
       return res.status(401).sen("Token inválido!");
     }
