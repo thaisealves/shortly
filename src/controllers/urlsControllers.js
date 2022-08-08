@@ -28,7 +28,7 @@ export async function openShorten(req, res) {
   const { shorten } = res.locals;
   try {
     await urlsRepository.updateVisitCount(shorten.shortUrl);
-    return res.redirect(shorten.result.rows[0].url);
+    return res.redirect(200, shorten.result.rows[0].url);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
