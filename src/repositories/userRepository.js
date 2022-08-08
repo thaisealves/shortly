@@ -3,6 +3,9 @@ import connection from "../dbStrategy/postgres.js";
 function getUser(email) {
   return connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
 }
+function getUserById(id) {
+  return connection.query(`SELECT * FROM users WHERE id = $1`, [id]);
+}
 
 function signUp(body) {
   return connection.query(
@@ -13,12 +16,13 @@ function signUp(body) {
 function getUserMe(id) {
   return connection.query(
     `
-  SELECT users.id, users.name AS name, SUM(urls."visitCount") AS "visitCount",
-  json_agg(json_build_object('id', urls.id, 'shortUrl', urls."shortUrl",'url', urls.url, 'visitCount', urls."visitCount")) AS "shortenedUrls"
-  FROM users 
-  JOIN urls ON urls."userId" = users.id
-  WHERE users.id = $1
-  GROUP BY users.id`,
+    SELECT users.id, users.name AS name, COALESCE(SUM(urls."visitCount"), 0) AS "visitCount",
+    COALESCE(json_agg(json_build_object('id', urls.id, 'shortUrl', urls."shortUrl",'url', urls.url, 'visitCount', urls."visitCount")) 
+    FILTER (WHERE urls.id IS NOT NULL) , '[]') AS "shortenedUrls"
+    FROM users 
+    LEFT JOIN urls ON urls."userId" = users.id
+    WHERE users.id = $1
+    GROUP BY users.id`,
     [id]
   );
 }
@@ -35,9 +39,10 @@ function ranking() {
     `
   );
 }
-export const userRepository = {
+export default{
   getUser,
   signUp,
   getUserMe,
   ranking,
+  getUserById,
 };

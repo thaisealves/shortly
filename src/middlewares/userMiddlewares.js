@@ -1,5 +1,5 @@
 import userSchemas from "../schemas/userSchemas.js";
-import { userRepository } from "../repositories/userRepository.js";
+import  userRepository  from "../repositories/userRepository.js";
 import bcrypt from "bcrypt";
 import jwt from "../token/jwt.js";
 
@@ -51,11 +51,11 @@ export async function getUserMiddleware(req, res, next) {
   const token = authorization?.replace("Bearer ", "");
   try {
     const verified = jwt.verifyToken(token);
-    const { rows: result } = await userRepository.getUser(verified.id);
+    const { rows: result } = await userRepository.getUser(verified.email);
     if (!verified) {
       return res.status(401).sen("Token inválido!");
     }
-    if (!result) {
+    if (result.length===0) {
       return res.status(404).send("Usuário não existe!");
     }
     res.locals.id = verified.id;

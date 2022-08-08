@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { userRepository } from "../repositories/userRepository.js";
+import  userRepository  from "../repositories/userRepository.js";
 import jwt from "../token/jwt.js";
 export async function signUp(req, res) {
   const { name, email, password, confirmPassword } = req.body;
@@ -36,10 +36,12 @@ export async function signIn(req, res) {
   };
   return res.status(200).send(data);
 }
+
 export async function getUser(req, res) {
   const { id } = res.locals;
   try {
     const { rows: result } = await userRepository.getUserMe(id);
+    console.log(result)
     res.status(200).send(result[0]);
   } catch (error) {
     console.log(error);
