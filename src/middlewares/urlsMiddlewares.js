@@ -7,8 +7,10 @@ export async function shortenMiddleware(req, res, next) {
     const { authorization } = req.headers;
     const token = authorization?.replace("Bearer ", "");
     const verified = jwt.verifyToken(token);
+    const { rows: result } = urlsRepository.getAllShortenById(verified.id); // the token may be verified with an user that doesnt exists anymore, checking here
     const { error } = urlsSchema.shortenSchema.validate(req.body);
-    if (!verified) {
+
+    if (!verified || !result) {
       return res.status(401).send("Token inválido!");
     }
     if (error) {
