@@ -55,7 +55,7 @@ export async function getUserMiddleware(req, res, next) {
     if (!verified) {
       return res.status(401).sen("Token inválido!");
     }
-    if (!result) {
+    if (result.length===0) {
       return res.status(404).send("Usuário não existe!");
     }
     res.locals.id = verified.id;

@@ -13,12 +13,13 @@ function signUp(body) {
 function getUserMe(id) {
   return connection.query(
     `
-  SELECT users.id, users.name AS name, SUM(urls."visitCount") AS "visitCount",
-  json_agg(json_build_object('id', urls.id, 'shortUrl', urls."shortUrl",'url', urls.url, 'visitCount', urls."visitCount")) AS "shortenedUrls"
-  FROM users 
-  JOIN urls ON urls."userId" = users.id
-  WHERE users.id = $1
-  GROUP BY users.id`,
+    SELECT users.id, users.name AS name, COALESCE(SUM(urls."visitCount"), 0) AS "visitCount",
+    COALESCE(json_agg(json_build_object('id', urls.id, 'shortUrl', urls."shortUrl",'url', urls.url, 'visitCount', urls."visitCount")) 
+    FILTER (WHERE urls.id IS NOT NULL) , '[]') AS "shortenedUrls"
+    FROM users 
+    LEFT JOIN urls ON urls."userId" = users.id
+    WHERE users.id = $1
+    GROUP BY users.id`,
     [id]
   );
 }

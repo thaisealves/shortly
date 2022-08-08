@@ -36,10 +36,12 @@ export async function signIn(req, res) {
   };
   return res.status(200).send(data);
 }
+
 export async function getUser(req, res) {
   const { id } = res.locals;
   try {
     const { rows: result } = await userRepository.getUserMe(id);
+    console.log(result)
     res.status(200).send(result[0]);
   } catch (error) {
     console.log(error);
