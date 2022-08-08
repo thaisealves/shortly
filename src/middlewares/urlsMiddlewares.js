@@ -1,15 +1,15 @@
 import { nanoid } from "nanoid";
 import urlsSchema from "../schemas/urlsSchemas.js";
 import urlsRepository from "../repositories/urlsRepository.js";
+import userRepository from "../repositories/userRepository.js";
 import jwt from "../token/jwt.js";
 export async function shortenMiddleware(req, res, next) {
   try {
     const { authorization } = req.headers;
     const token = authorization?.replace("Bearer ", "");
     const verified = jwt.verifyToken(token);
-    const { rows: result } = urlsRepository.getAllShortenById(verified.id); // the token may be verified with an user that doesnt exists anymore, checking here
+    const { rows: result } = await userRepository.getUserById(verified.id); // the token may be verified with an user that doesnt exists anymore, checking here
     const { error } = urlsSchema.shortenSchema.validate(req.body);
-
     if (!verified || !result) {
       return res.status(401).send("Token inválido!");
     }

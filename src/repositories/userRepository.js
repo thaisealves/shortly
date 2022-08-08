@@ -3,6 +3,9 @@ import connection from "../dbStrategy/postgres.js";
 function getUser(email) {
   return connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
 }
+function getUserById(id) {
+  return connection.query(`SELECT * FROM users WHERE id = $1`, [id]);
+}
 
 function signUp(body) {
   return connection.query(
@@ -36,9 +39,10 @@ function ranking() {
     `
   );
 }
-export const userRepository = {
+export default{
   getUser,
   signUp,
   getUserMe,
   ranking,
+  getUserById,
 };

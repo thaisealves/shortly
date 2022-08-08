@@ -1,5 +1,5 @@
 import userSchemas from "../schemas/userSchemas.js";
-import { userRepository } from "../repositories/userRepository.js";
+import  userRepository  from "../repositories/userRepository.js";
 import bcrypt from "bcrypt";
 import jwt from "../token/jwt.js";
 

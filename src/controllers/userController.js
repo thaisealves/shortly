@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { userRepository } from "../repositories/userRepository.js";
+import  userRepository  from "../repositories/userRepository.js";
 import jwt from "../token/jwt.js";
 export async function signUp(req, res) {
   const { name, email, password, confirmPassword } = req.body;
