@@ -22,8 +22,22 @@ function getUserMe(id) {
     [id]
   );
 }
+
+function ranking() {
+  return connection.query(
+    `SELECT users.id AS id, users.name AS name, 
+    COUNT(urls."shortUrl") AS "linksCount",
+    COALESCE(SUM(urls."visitCount"), 0) AS "visitCount"
+    FROM users
+    LEFT JOIN urls ON users.id = urls."userId"
+    GROUP BY users.id  
+    ORDER BY "visitCount" DESC LIMIT 10
+    `
+  );
+}
 export const userRepository = {
   getUser,
   signUp,
   getUserMe,
+  ranking,
 };

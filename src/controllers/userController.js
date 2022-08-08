@@ -40,6 +40,19 @@ export async function getUser(req, res) {
   const { id } = res.locals;
   try {
     const { rows: result } = await userRepository.getUserMe(id);
+    res.status(200).send(result[0]);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
+
+export async function ranking(req, res) {
+  try {
+    const { rows: result } = await userRepository.ranking();
     res.status(200).send(result);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 }
